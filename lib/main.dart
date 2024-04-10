@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/components/movie_card.dart';
 import 'package:movie_app/providers/movie_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch:
-              Colors.deepPurple, // Changed seedColor to primarySwatch
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const Home(), // Removed 'Placeholder()' and replaced with 'Home()'
@@ -35,9 +33,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   @override
+  void initState() {
+    Provider.of<MovieProvider>(context, listen: false).loadMovies(context);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final movies = Provider.of<MovieProvider>(context)
-        .loadMovies(); // Moved inside build method
+    final movieData = Provider.of<MovieProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -45,21 +48,11 @@ class _HomeState extends State<Home> {
       ),
       body: Center(
         child: ListView.builder(
-          itemCount:
-              movies.length, // Changed to use 'movies' instead of '_movieList'
+          itemCount: movieData.movieList
+              .length, // Changed to use 'movies' instead of '_movieList'
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(movies[index]),
-              subtitle: const Text('sub'),
-              trailing: const Icon(Icons.sunny),
-              leading: CircleAvatar(
-                child: Text(movies[index][0]),
-              ),
-            );
-            // return Card(
-            //     child: Center(
-            //   child: Text(movies[index]),
-            // )); // Removed 'const' since content is dynamic
+            final movie = movieData.movieList[index];
+            return MovieCard(movie: movie);
           },
         ),
       ),

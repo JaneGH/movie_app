@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/models/movie.dart';
+import 'package:movie_app/utils/movie_parser.dart';
 
 class MovieProvider extends ChangeNotifier {
-  final List<String> _movieList = [
-    "The godfatger9",
-    "The godfatger1",
-    "The godfatger2",
-    "The godfatger3",
-    "The godfatger4",
+  List<Movie> _movieList = [
+    // "The Godfather",
   ];
 
-  List<String> get movieList => movieList;
-  List<String> loadMovies() {
-    return _movieList;
+  List<Movie> get movieList => _movieList;
+
+  Future<void> loadMovies(BuildContext context) async {
+    try {
+      final jsonString = await DefaultAssetBundle.of(context)
+          .loadString('assets/data/films.json');
+
+      final movies = MovieParser.parse(jsonString);
+
+      _movieList = movies;
+
+      notifyListeners();
+    } catch (e) {
+      print('Error loading movies: $e');
+    }
   }
 }
