@@ -48,8 +48,18 @@ class _HomeState extends State<Home> {
           itemCount:
               movies.length, // Changed to use 'movies' instead of '_movieList'
           itemBuilder: (context, index) {
-            return Text(
-                movies[index]); // Removed 'const' since content is dynamic
+            return ListTile(
+              title: Text(movies[index]),
+              subtitle: const Text('sub'),
+              trailing: const Icon(Icons.sunny),
+              leading: CircleAvatar(
+                child: Text(movies[index][0]),
+              ),
+            );
+            // return Card(
+            //     child: Center(
+            //   child: Text(movies[index]),
+            // )); // Removed 'const' since content is dynamic
           },
         ),
       ),
